@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual 1: n8n en tu propio servidor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--paper:#F5F7FA;--ink:#0D1B2A;--muted:#4D5C6B;--line:#D5DCE4;--gold:#8F6B00;--goldbg:#FFF5D1;--code:#0D1B2A;--codefg:#E6EDF5;--warn:#9A3B1E;--warnbg:#FDEDE7;--sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--mono:"IBM Plex Mono",ui-monospace,Consolas,monospace}
+*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:1rem}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 1.0625rem/1.65 var(--sans)}
+a{color:#0B4F8A}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.hero{background:var(--ink);color:#fff;padding:3.5rem 1.5rem 3rem}
+.hero>div{max-width:68rem;margin:0 auto}
+.hero p.k{margin:0 0 .75rem;color:#E5C100;font-weight:600}
+.hero h1{margin:0;font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;letter-spacing:-.02em;font-weight:700;max-width:16ch}
+.hero p.s{margin:1.25rem 0 0;max-width:46rem;color:#C5D0DC}
+.route{display:flex;flex-wrap:wrap;gap:.5rem 0;margin:2rem 0 0;padding:0;list-style:none;counter-reset:r}
+.route li{counter-increment:r;position:relative;padding:0 1.6rem 0 1.9rem;font-weight:500}
+.route li::before{content:counter(r);position:absolute;left:0;top:.1rem;width:1.35rem;height:1.35rem;border-radius:50%;background:#E5C100;color:var(--ink);font-size:.8rem;font-weight:700;display:grid;place-items:center}
+.route li:not(:last-child)::after{content:"";position:absolute;right:.35rem;top:.85rem;width:.9rem;height:2px;background:#5B6E83}
+.wrap{max-width:68rem;margin:0 auto;padding:2rem 1.5rem 4rem;display:grid;grid-template-columns:15rem minmax(0,1fr);gap:3rem}
+nav.toc{position:sticky;top:1rem;align-self:start;font-size:.95rem}
+nav.toc ol{margin:0;padding:0;list-style:none}nav.toc a{display:block;padding:.3rem 0;text-decoration:none;color:var(--muted)}
+nav.toc a:hover{color:var(--ink)}nav.toc summary{display:none}
+main{max-width:46rem}
+section{margin:0 0 3rem}
+h2{font-size:1.65rem;line-height:1.2;margin:0 0 1rem;letter-spacing:-.01em;border-top:2px solid var(--ink);padding-top:1rem}
+h3{font-size:1.1rem;margin:1.75rem 0 .5rem}
+p{margin:.75rem 0}
+code{font:500 .92em var(--mono);background:#E8EDF3;padding:.1em .35em;border-radius:3px}
+.code{position:relative;margin:1rem 0}
+pre{margin:0;background:var(--code);color:var(--codefg);padding:1rem 1rem 1rem 1.1rem;border-radius:6px;overflow-x:auto;font:400 .9rem/1.6 var(--mono)}
+pre .c{color:#8FA3B8}
+.copy{position:absolute;top:.5rem;right:.5rem;background:#1E3550;color:#E6EDF5;border:1px solid #3A5578;border-radius:4px;padding:.25rem .6rem;font:500 .8rem var(--sans);cursor:pointer}
+.copy:hover{background:#2A476B}
+.note,.warn{margin:1.25rem 0;padding:.85rem 1rem;border-left:4px solid var(--gold);background:var(--goldbg);border-radius:0 6px 6px 0}
+.warn{border-color:var(--warn);background:var(--warnbg)}
+.note b,.warn b{display:block;margin-bottom:.15rem}
+.tbl{overflow-x:auto;margin:1rem 0}
+table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.97rem}
+th,td{text-align:left;vertical-align:top;padding:.6rem .7rem;border-bottom:1px solid var(--line)}
+th{background:#E8EDF3;font-weight:600}
+td.f{background:#fff;color:var(--muted);font-style:italic}
+.src{font-size:.88rem;color:var(--muted)}
+ul,ol.s{padding-left:1.25rem}li{margin:.3rem 0}
+ol.chk{list-style:none;padding:0}ol.chk li{padding-left:1.8rem;position:relative}
+ol.chk li::before{content:"";position:absolute;left:0;top:.35rem;width:1rem;height:1rem;border:2px solid var(--ink);border-radius:3px}
+footer{border-top:1px solid var(--line);padding-top:1rem;color:var(--muted);font-size:.9rem}
+@media(max-width:52rem){.wrap{grid-template-columns:1fr;gap:1rem}nav.toc{position:static;border:1px solid var(--line);border-radius:6px;padding:.5rem .9rem;background:#fff}nav.toc summary{display:block;cursor:pointer;font-weight:600;padding:.25rem 0}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero"><div>
+<p class="k">Manual 1 de 2 · DAO Consulting &amp; Learning Hub</p>
+<h1>n8n en tu propio servidor</h1>
+<p class="s">Cómo instalar, arrancar, exponer y respaldar n8n en una computadora con Windows para automatizar sin pagar una suscripción mensual. El segundo manual cubrirá cómo construir un agente sobre esta base.</p>
+<ol class="route"><li>Instalar</li><li>Arrancar</li><li>Exponer por HTTPS</li><li>Probar</li></ol>
+</div></header>
+
+<div class="wrap">
+<nav class="toc" aria-label="Contenido"><details open><summary>Contenido</summary><ol>
+<li><a href="#porque">1. ¿Conviene hacerlo local?</a></li>
+<li><a href="#requisitos">2. Requisitos</a></li>
+<li><a href="#instalar">3. Instalar</a></li>
+<li><a href="#arrancar">4. Primer arranque</a></li>
+<li><a href="#https">5. Exponer por HTTPS</a></li>
+<li><a href="#prueba">6. Prueba mínima</a></li>
+<li><a href="#operacion">7. Operación y respaldos</a></li>
+<li><a href="#seguridad">8. Seguridad de secretos</a></li>
+<li><a href="#problemas">9. Problemas observados</a></li>
+<li><a href="#fuentes">Fuentes</a></li>
+</ol></details></nav>
+
+<main>
+<section id="porque"><h2>1. ¿Conviene hacerlo local?</h2>
+<p>La edición comunitaria de n8n autoalojada no cobra licencia [3]. El costo está en el servidor que la ejecuta: aquí, tu computadora, y “gratis” no incluye su costo real. Antes de decidir, llena la tabla con tus propias cifras.</p>
+<div class="tbl"><table><thead><tr><th>Concepto</th><th>Local (tu equipo)</th><th>n8n Cloud</th><th>VPS</th></tr></thead><tbody>
+<tr><td>Licencia o suscripción</td><td class="f">Sin cuota [3]</td><td class="f">Consulta su página de precios</td><td class="f">Sin cuota [3]</td></tr>
+<tr><td>Equipo y electricidad</td><td class="f">Tu cifra</td><td class="f">No aplica</td><td class="f">No aplica</td></tr>
+<tr><td>Servidor</td><td class="f">No aplica</td><td class="f">Incluido</td><td class="f">Tu cifra</td></tr>
+<tr><td>Dominio o túnel estable</td><td class="f">Tu cifra</td><td class="f">Incluido</td><td class="f">Tu cifra</td></tr>
+<tr><td>Disponibilidad</td><td class="f">Solo con el equipo encendido</td><td class="f">Siempre</td><td class="f">Siempre</td></tr>
+</tbody></table></div>
+<div class="warn"><b>Licencia</b>La Sustainable Use License es gratuita y aplica solo a la versión autoalojada [3]. Fuentes de terceros indican que puedes dar consultoría y construir workflows para clientes, pero no ofrecerles acceso a tu instancia como servicio de hosting de pago [8]. Esto no es asesoría legal. Ante dudas, escribe a license@n8n.io.</div>
+</section>
+
+<section id="requisitos"><h2>2. Requisitos</h2>
+<ul>
+<li>Windows 10 u 11. Este manual solo se probó en Windows.</li>
+<li>PowerShell abierto como administrador: clic derecho, “Ejecutar como administrador”.</li>
+<li>Node.js LTS con npm.</li>
+</ul>
+<div class="note"><b>Versión de Node.js</b>Una copia de la documentación y un tutorial indican que n8n funciona con Node.js 20.19 a 24.x [7][10]. Verifica el rango vigente en docs.n8n.io. La versión probada aquí fue Node.js v24.14.1.</div>
+<div class="warn"><b>La instalación por npm tiene fecha de caducidad</b>La documentación oficial indica que las instalaciones con npm quedan obsoletas desde n8n 3.0 [2]. Este manual usa n8n 2.15.1. Para versiones posteriores, revisa las opciones con Docker en la documentación.</div>
+</section>
+
+<section id="instalar"><h2>3. Instalar</h2>
+<p>Instala Node.js desde PowerShell:</p>
+<div class="code"><pre>winget install OpenJS.NodeJS.LTS</pre></div>
+<p>Cierra PowerShell y ábrelo de nuevo como administrador. Verifica e instala n8n:</p>
+<div class="code"><pre>node --version
+npm --version
+npm install -g n8n
+n8n --version</pre></div>
+<p>La instalación global con <code>npm install n8n -g</code> y el arranque con <code>n8n start</code> son los comandos de la documentación oficial [2]. Con esta guía, el último comando mostró <code>2.15.1</code>.</p>
+</section>
+
+<section id="arrancar"><h2>4. Primer arranque</h2>
+<div class="code"><pre>$env:N8N_DIAGNOSTICS_ENABLED='false'
+n8n start</pre></div>
+<p>Escribe cada comando en su propia línea. Cuando la terminal diga que el editor está accesible, abre <code>http://localhost:5678</code> en el navegador y sigue el asistente de la primera vez.</p>
+<div class="note"><b>Observado en n8n 2.15.1, noviembre de 2026</b>
+Al arrancar aparecieron dos avisos: que falta Python 3 para el ejecutor de tareas Python, y que el certificado de licencia no está inicializado. El editor abrió con normalidad. El aviso de Python probablemente solo afecta a nodos Code escritos en Python (inferencia). No confirmé el significado exacto del aviso de licencia.</div>
+</section>
+
+<section id="https"><h2>5. Exponer n8n por HTTPS</h2>
+<p>Un equipo en casa no recibe llamadas desde internet, y servicios como Telegram exigen una URL HTTPS pública para enviar mensajes a tus workflows [4][5]. Sin ella, n8n arranca bien pero los triggers externos no se activan. La solución es un túnel que dé una URL pública a tu n8n local.</p>
+<div class="tbl"><table><thead><tr><th>Opción</th><th>Lo que sabemos</th></tr></thead><tbody>
+<tr><td>ngrok</td><td>Es lo que usa esta guía. En el plan gratuito, la URL cambia en cada sesión y hay que repetir la configuración.</td></tr>
+<tr><td>Cloudflare Tunnel</td><td>Da un subdominio estable bajo un dominio propio y no abre puertos en tu router [5]. No verificamos costos ni límites.</td></tr>
+<tr><td>Túnel integrado de n8n</td><td>Existe y usa cloudflared, pero requiere Docker [2]. No verificamos si es apto para uso continuo.</td></tr>
+<tr><td>VPS</td><td>Ya tiene IP pública, así que no necesita túnel [5], pero tiene costo mensual.</td></tr>
+</tbody></table></div>
+<h3>Ejemplo con ngrok</h3>
+<p>Una sola vez, instala ngrok y autentícalo con el token de tu cuenta:</p>
+<div class="code"><pre>winget install ngrok.ngrok
+ngrok update
+ngrok config add-authtoken TU_TOKEN_AQUI</pre></div>
+<p><b>Ventana 1.</b> Abre el túnel y copia la URL que aparece en “Forwarding”:</p>
+<div class="code"><pre>ngrok http 5678</pre></div>
+<p><b>Ventana 2.</b> Arranca n8n con esa URL:</p>
+<div class="code"><pre>$env:N8N_DIAGNOSTICS_ENABLED='false'
+$env:WEBHOOK_URL='https://xxxx.ngrok-free.dev'
+n8n start</pre></div>
+<p>La variable <code>WEBHOOK_URL</code> debe ser la dirección HTTPS pública y no <code>localhost</code>; el cambio se aplica reiniciando n8n [4]. Al abrir n8n por túnel puedes ver una página de advertencia de ngrok antes de pasar a n8n; la guía de recuperación indica reiniciar ngrok y repetir la configuración si bloquea las peticiones.</p>
+</section>
+
+<section id="prueba"><h2>6. Prueba mínima</h2>
+<p>Antes de construir algo grande, comprueba que el servidor funciona con un workflow de un solo nodo.</p>
+<ol class="s">
+<li>En el editor, crea un workflow nuevo y agrega un nodo <b>Webhook</b>. Anota su ruta y su <b>Production URL</b>.</li>
+<li>Publica el workflow con el botón <b>Publish</b>.</li>
+<li>Abre la Production URL en el navegador, usando la dirección pública del túnel.</li>
+<li>Resultado esperado: n8n responde algo y la ejecución aparece en la pestaña <b>Executions</b>.</li>
+</ol>
+<div class="note"><b>Verifica en tu versión</b>Los nombres exactos de los botones y la respuesta por defecto del nodo Webhook pueden variar entre versiones. No los verificamos en la documentación para este manual.</div>
+</section>
+
+<section id="operacion"><h2>7. Operación y respaldos</h2>
+<h3>Cada vez que reinicias el equipo</h3>
+<ol class="s"><li>Abre ngrok y copia la URL nueva.</li><li>Arranca n8n con esa URL en <code>WEBHOOK_URL</code>.</li><li>Republica los workflows que usen triggers externos.</li></ol>
+<h3>Actualizar</h3>
+<div class="code"><pre>npm update -g n8n</pre></div>
+<p>Es el comando oficial para actualizar una instalación con npm [2]. Respalda antes de actualizar.</p>
+<h3>Respaldar</h3>
+<ul>
+<li><b>Un workflow:</b> menú de tres puntos, <b>Download</b>. Baja un archivo JSON [1].</li>
+<li><b>Todos, por consola:</b> <code>n8n export:workflow --all --output=./respaldo/</code> [6].</li>
+<li><b>Credenciales:</b> el comando <code>n8n export:credentials</code> las exporta cifradas, y solo se restauran con la misma clave de cifrado de n8n [6]. Guarda esa clave por separado.</li>
+</ul>
+<p>La descarga manual no incluye los valores de las credenciales; al importar en otra instancia tendrás que recrearlas [1][6].</p>
+</section>
+
+<section id="seguridad"><h2>8. Seguridad de secretos</h2>
+<div class="warn"><b>Caso real que motivó este apartado</b>Un workflow exportado contenía una clave de API completa dentro del encabezado de un nodo HTTP Request. La documentación oficial advierte que estos nodos pueden incluir encabezados de autenticación en el JSON y que hay que quitarlos antes de compartir [1].</div>
+<ul>
+<li>Antes de compartir o publicar un JSON, búscalo en un editor de texto: <code>Authorization</code>, <code>Bearer</code>, <code>token</code> y <code>key</code>.</li>
+<li>El JSON también incluye nombres e IDs de credenciales, y los IDs de hojas de Google en los nodos [1].</li>
+<li>Si una clave llegó a un lugar público o ajeno, revócala y genera una nueva. Borrar el archivo no basta.</li>
+<li>No pegues claves en documentos, capturas ni repositorios públicos.</li>
+<li>Si guardas datos personales de usuarios, informa su uso con un aviso de privacidad. Verifica la normativa que aplique en tu país; no la verificamos aquí.</li>
+</ul>
+</section>
+
+<section id="problemas"><h2>9. Problemas observados</h2>
+<div class="tbl"><table><thead><tr><th>Síntoma</th><th>Qué se observó y qué hacer</th></tr></thead><tbody>
+<tr><td><code>Bad request - please check your parameters</code> al activar workflows</td><td>Apareció al arrancar n8n sin <code>WEBHOOK_URL</code> con un workflow de Telegram publicado. Causa probable: falta la URL HTTPS pública [4]. Define la variable con la URL del túnel y reinicia.</td></tr>
+<tr><td><code>The connection timed out</code> en reintentos de activación</td><td>No confirmamos la causa. Puede ser red o firewall, o consecuencia del error anterior. Corrige primero la URL pública.</td></tr>
+<tr><td>El editor no abre en <code>localhost:5678</code></td><td>n8n puede no haber terminado de arrancar. Espera el mensaje “Editor is now accessible” y revisa la terminal.</td></tr>
+<tr><td>El comando <code>n8n</code> no se reconoce</td><td>Cierra y vuelve a abrir PowerShell como administrador. Si persiste, repite <code>npm install -g n8n</code>.</td></tr>
+<tr><td>Dejó de funcionar tras reiniciar el equipo</td><td>La URL de ngrok gratuito cambió. Repite la sección 7.</td></tr>
+</tbody></table></div>
+<h3>Lista de verificación final</h3>
+<ol class="chk">
+<li><code>node --version</code> y <code>n8n --version</code> responden.</li>
+<li>El editor abre en <code>localhost:5678</code>.</li>
+<li>El túnel muestra una URL HTTPS pública.</li>
+<li>n8n arrancó con <code>WEBHOOK_URL</code> igual a esa URL.</li>
+<li>La prueba del Webhook responde y deja una ejecución.</li>
+<li>Descargaste un respaldo y guardaste la clave de cifrado.</li>
+</ol>
+</section>
+
+<section id="fuentes"><h2>Fuentes</h2>
+<p class="src">Las oficiales son las únicas que respaldan afirmaciones técnicas sin reservas. Las demás son de terceros o foros. Verifica los datos sensibles a cambios antes de usarlos en producción.</p>
+<ol class="src">
+<li>[1] n8n, Export and import (oficial): <a href="https://docs.n8n.io/build/manage-workflows/export-and-import.md">docs.n8n.io/build/manage-workflows/export-and-import</a></li>
+<li>[2] n8n, Install with npm (oficial): <a href="https://docs.n8n.io/deploy/host-n8n/install-options/install-with-npm">docs.n8n.io/deploy/host-n8n/install-options/install-with-npm</a></li>
+<li>[3] n8n, License FAQ (oficial): <a href="https://docs.n8n.io/n8n-community-license/community-license/license-faq.md">docs.n8n.io/n8n-community-license/community-license/license-faq</a></li>
+<li>[4] Foro n8n, Telegram Trigger y HTTPS: <a href="https://community.n8n.io/t/telegram-trigger-bad-request-bad-webhook-an-https-url-must-be-provided-for-webhook/212165">community.n8n.io</a></li>
+<li>[5] D. Raine, Cloudflare Tunnel para n8n local: <a href="https://danraine.substack.com/p/unleashing-autonomy-getting-setup-5c7">danraine.substack.com</a></li>
+<li>[6] Rapidevelopers, respaldo de workflows (tercero): <a href="https://www.rapidevelopers.com/md/n8n-tutorial/how-to-back-up-n8n-workflows">rapidevelopers.com</a></li>
+<li>[7] Copia de la documentación de n8n (tercero, desactualizada): <a href="https://n8n-docs.teamlab.info/hosting/installation/npm/">n8n-docs.teamlab.info</a></li>
+<li>[8] Nordflux, licencia para agencias (tercero): <a href="https://nordflux.de/en/guides/n8n-agentur-kunden-hosten-lizenz">nordflux.de</a></li>
+<li>[9] Guía de recuperación DAO, abril de 2026, y observaciones propias en n8n 2.15.1.</li>
+<li>[10] Tecmint, instalación de n8n (tercero): <a href="https://pro.tecmint.com/install-n8n-linux/">pro.tecmint.com</a></li>
+</ol>
+</section>
+<footer>Manual 1 de 2 · Verificado en n8n 2.15.1 con Windows, noviembre de 2026. DAO Consulting &amp; Learning Hub.</footer>
+</main>
+</div>
+<script>
+document.querySelectorAll('.code').forEach(function(b){
+  var btn=document.createElement('button');btn.className='copy';btn.type='button';btn.textContent='Copiar';
+  btn.addEventListener('click',function(){
+    var t=b.querySelector('pre').innerText;
+    try{navigator.clipboard.writeText(t).then(function(){btn.textContent='Copiado';setTimeout(function(){btn.textContent='Copiar'},1500)})}catch(e){btn.textContent='Selecciona y copia'}
+  });
+  b.appendChild(btn);
+});
+</script>
+</body>
+</html>
